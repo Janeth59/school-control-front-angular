@@ -1,0 +1,25 @@
+<table class="table table-striped-columns table-secondary">
+  <thead class="table-light">
+    <tr>
+      <th scope="col">Control Number</th>
+      <th scope="col">Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Grade</th>
+      <th scope="col">Group</th>
+      <th scope="col">Average</th>
+      <th colspan="2">Operaciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let student of students"> <!--extension de ngFor-->
+      <td>{{ student.student_id }}</td>
+      <td>{{ student.name }}</td>
+      <td>{{ student.lastname }}</td>
+      <td>{{ student.grade }}</td>
+      <td>{{ student.group }}</td>
+      <td>{{ student.average }}</td>
+      <td class="btn btn-warning">Editar</td>
+      <td class="btn btn-danger">Eliminar</td>
+    </tr>
+  </tbody>
+</table>
