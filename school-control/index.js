@@ -9,17 +9,16 @@ app.set("port", process.env.PORT || 3500);
 app.use(express.json());
 //Routes
 //Insertar un estudiante
-app.post("/insertOne", async (req, res) => {
+app.post("/insertOne", async (req, res) => {     //cambio 1
   //Procesamiento de la petición
-  console.log(req.body);
-  await Student.create(req.body);
-  res.json({ message: "Student inserted" });
+  const studentSaved = await Student.create(req.body);
   //Enviar respuesta
+  res.json(studentSaved);
 });
 //Obtener todos los estudiantes
-app.get("/getAll", async (req, res) => {
+app.get("/getAll", async (req, res) => {        //cambio 2
   const students = await Student.find();
-  res.json({ data: students });
+  res.json( students ); 
 });
 //Obtener un estudiante por su id
 app.get("/getOne/:num_control", async (req, res) => {
