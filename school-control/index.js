@@ -1,5 +1,6 @@
 import express from "express";
 import Student from "./Student.js";
+import cors from "cors";
 import "./database.js";
 const app = express();
 
@@ -7,6 +8,7 @@ const app = express();
 app.set("port", process.env.PORT || 3500);
 //Middlewares
 app.use(express.json());
+app.use(cors({origin: "*"}));
 //Routes
 //Insertar un estudiante
 app.post("/insertOne", async (req, res) => {     //cambio 1
