@@ -1,61 +1,57 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Student } from '../../models/student.model';
+import { NgFor } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { StudentService } from '../../services/student.service';
+import { Student } from '../../models/student.model';
 
 @Component({
   selector: 'app-table',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [NgFor],
   templateUrl: './table.html',
   styleUrl: './table.css',
 })
 export class Table implements OnInit {
-  students: Student[] = [];
+  students: Student[]=[];
 
-  // Definición del formulario
-  studentForm = new FormGroup({
-    student_id: new FormControl('', [Validators.required]),
-    name: new FormControl('', [Validators.required]),
-    lastname: new FormControl('', [Validators.required]),
-    grade: new FormControl(0, [Validators.required]),
-    group: new FormControl('', [Validators.required]),
-    average: new FormControl(0, [Validators.required]),
-  });
-
-  constructor(private studentService: StudentService) {}
+  constructor(
+    private studentservice: StudentService,
+    private cdr: ChangeDetectorRef
+  ){}
 
   ngOnInit(): void {
-    this.loadStudents();
-
-    // Suscripción al Subject para actualizar la tabla cuando se crea uno nuevo
-    this.studentService.created$.subscribe((newStudent: Student) => {
-      // Usamos el spread operator [...] para forzar a Angular a detectar el cambio
-      this.students = [...this.students, newStudent];
+     this.loadStudents();
+     this.studentservice.created$.subscribe(s => {
+      this.students.push(s);
+      this.cdr.detectChanges();
     });
+
+     this.studentservice.deleted$.subscribe(Student =>{
+      this.students = this.students.filter(s => s.student_id !== Student.student_id);
+     })
   }
 
-  loadStudents(): void {
-    this.studentService.getStudents().subscribe({
-      next: (data) => {
-        this.students = data;
-        console.log('Datos recibidos:', data);
+   loadStudents(): void {
+
+    this.studentservice.getStudents().subscribe({
+      next: data => {
+        this.students = data
+        this.cdr.detectChanges();
+        console.log('Estudiantes',this.students)  
       },
-      error: (err) => console.error('Error al cargar:', err)
+      error: err => console.error('Error al cargar estudiantes', err)
     });
   }
 
-  onSubmit(): void {
-    if (this.studentForm.valid) {
-      const formValue = this.studentForm.value as Student;
-      this.studentService.createStudent(formValue).subscribe({
-        next: (res) => {
-          console.log('Guardado exitoso');
-          this.studentForm.reset();
-        },
-        error: (err) => console.error('Error al guardar:', err)
-      });
-    }
+  removeStudent (id: string): void {
+    this.studentservice.deleteStudent(id).subscribe({
+      next:()=>{
+        this.students = this.students.filter(st=> st.student_id !== id);
+        this.loadStudents();
+      },
+      error: err => console.error('Error al eliminar el estudiante', err)
+      
+    });
   }
+
+
+  
 }

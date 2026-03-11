@@ -1,26 +1,28 @@
 import express from "express";
 import Student from "./Student.js";
-import cors from "cors";
 import "./database.js";
+import cors from "cors";
 const app = express();
 
 //Settings
 app.set("port", process.env.PORT || 3500);
 //Middlewares
+app.use(cors({ origin: "*" }));
 app.use(express.json());
-app.use(cors({origin: "*"}));
+
 //Routes
 //Insertar un estudiante
-app.post("/insertOne", async (req, res) => {     //cambio 1
+app.post("/insertOne", async (req, res) => {
   //Procesamiento de la petición
-  const studentSaved = await Student.create(req.body);
-  //Enviar respuesta
+  console.log(req.body);
+  const studentSaved =await Student.create(req.body);
   res.json(studentSaved);
+  console.log(studentSaved);
 });
 //Obtener todos los estudiantes
-app.get("/getAll", async (req, res) => {        //cambio 2
+app.get("/getAll", async (req, res) => {
   const students = await Student.find();
-  res.json( students ); 
+  res.json(students);
 });
 //Obtener un estudiante por su id
 app.get("/getOne/:num_control", async (req, res) => {
@@ -28,6 +30,7 @@ app.get("/getOne/:num_control", async (req, res) => {
   if (student) res.json({ data: student });
   else res.status(404).json({ message: "Student not found" });
 });
+
 //Actualizar un estudiante por su id
 app.put("/updateOne/:num_control", async (req, res) => {
   //Procesamiento de la petición
@@ -45,6 +48,24 @@ app.put("/updateOne/:num_control", async (req, res) => {
     res.status(404).json({ message: "Student not found" });
   }
 });
+
+
+app.delete("/deleteOne/:num_control", async (req, res)=> {
+  const result = await Student.findOneAndDelete({
+    student_id: req.params.num_control,
+
+  });
+  console.log(result)
+  if (result){
+    res.json(result);
+  }else{
+    res.status(404).json({message: "Student not found"});
+  }
+});
+
+
+
+
 //Start server
 app.listen(app.get("port"), () => {
   console.log("Server on port", app.get("port"));

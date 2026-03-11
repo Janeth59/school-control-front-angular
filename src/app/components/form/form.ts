@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormsModule, Validator, FormBuilder, Validators } from '@angular/forms';
 import { StudentService } from '../../services/student.service';
-import { error, group } from 'console';
+//import { error, group } from 'console';
 import {Student} from "../../models/student.model"
 imports: [ReactiveFormsModule];
 
 @Component({
   selector: 'app-form',
+  standalone: true,
   imports: [ReactiveFormsModule, FormsModule],
   templateUrl: './form.html',
   styleUrl: './form.css',
@@ -37,16 +38,14 @@ export class Form implements OnInit {
     }
 
 
-  const student: Student = this.studentForm.value;
-  this.studentService.createStudent (student).subscribe({
-    next:s =>{
-      console.log('EStudiante Guardado', s);
-      this.studentForm.reset();
-    },
+    const student: Student = this.studentForm.value;
+    this.studentService.createStudent (student).subscribe({
+      next:s =>{
+        console.log('Estudiante Guardado', s);
+        this.studentForm.reset();
+      },
 
-    error: err => console.error('Error al guardar estudiante', err)
-  });
+      error: err => console.error('Error al guardar estudiante', err)
+    });
   }
-
-
 }
