@@ -32,10 +32,21 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="log-lg-3">
-                    <button type="submit" class="btn btn-primary" value="Guardar"
-                    >Guardar</button>
+                <div class="col-lg-3">
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fas" 
+                      [ngClass]="{'fa-save': !isEditingMode, 'fa-edit': isEditingMode}"></i>
+                      {{ isEditingMode ? 'Actualizar' : 'Guardar' }}
+                    </button>
                 </div>
+                @if (isEditingMode) {
+                    <div class="col-lg-3">
+                     <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
+                         <i class="fas fa-times"></i> Cancelar
+                      </button>
+                     </div>
+                }
+                
             </div>
         </form>
     </div>

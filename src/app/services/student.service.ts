@@ -25,7 +25,7 @@ private httpOptions = {
 
     //crear nuevo estudiante
     createStudent(student: Student): Observable<Student>{
-        console.log(student)
+        console.log(student);
         return this.http.post<Student>(this.baseUrl+'/insertOne', student, this.httpOptions)
         .pipe(
                 tap(s => this._created$.next(s))   //la resouesta se la mandamos al observable y lo agrega al arreglo que declaramos hasta arriba en la tabla
@@ -41,5 +41,23 @@ private httpOptions = {
         const url = `${this.baseUrl}/deleteOne/${student_id}`;
         return this.http.delete<void>(url, this.httpOptions);
     }
+
+
+    //ACTUALIZAR ESTUDIANTES
+    private _updated$ = new Subject<Student>();
+    updated$ = this._updated$.asObservable();
+
+    //inovanco al updtae sevricio
+    updateStudent(student: Student): Observable<Student>{
+        console.log(student);
+        const url = `${this.baseUrl}/updateOne/${student.student_id}`;
+        return this.http.put<Student>(url, student, this.httpOptions)
+        .pipe(
+            tap(s => this._updated$.next(s))
+        );
+
+    }
+
+    
     
 }
